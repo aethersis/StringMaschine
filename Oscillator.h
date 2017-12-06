@@ -46,10 +46,12 @@ public:
 	float generate()
 	{
 		m_phaseAccumulator = fmod(m_phaseAccumulator + m_increment, (float)m_lutBank.lookupTableSize);
-		float integerPart;
-		auto fractionalPart = modf(m_phaseAccumulator, &integerPart);
+		return m_lookupTable[(int)m_phaseAccumulator];
 
-		return (1.f - fractionalPart) * m_lookupTable[(int)m_phaseAccumulator] + (fractionalPart) * m_lookupTable[(int)(m_phaseAccumulator + 1)%m_lutBank.lookupTableSize];
+		//float integerPart;
+		//auto fractionalPart = modf(m_phaseAccumulator, &integerPart);
+
+		//return (1.f - fractionalPart) * m_lookupTable[(int)m_phaseAccumulator] + (fractionalPart) * m_lookupTable[(int)(m_phaseAccumulator + 1)%m_lutBank.lookupTableSize];
 	}
 
 private:

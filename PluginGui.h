@@ -58,6 +58,8 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 	StringMaschineAudioProcessor& processor;
+	void toggleFollowButtonState(ScopedPointer<TextButton>& button, StringSynthesizer::FollowType followType);
+
 	std::map<LUTBank::Waveform, std::string> m_waveformToString =
 	{
 		{ LUTBank::Waveform::Sine, "Sine" },
@@ -104,6 +106,15 @@ private:
     ScopedPointer<Label> lblTremoloDepth;
     ScopedPointer<Slider> sldMasterVolume;
     ScopedPointer<Label> lblMasterVolume;
+    ScopedPointer<TextButton> textButton;
+    ScopedPointer<TextButton> tbThicknesVel;
+    ScopedPointer<TextButton> tbBrightnessVel;
+    ScopedPointer<TextButton> tbLevelVel;
+    ScopedPointer<TextButton> tbStrengthVel;
+    ScopedPointer<TextButton> tbCutoffVel;
+    ScopedPointer<TextButton> tbVolumeVel;
+    ScopedPointer<TextButton> tbTremoloFreqVel;
+    ScopedPointer<TextButton> tbTremoloDepthVel;
 
 
     //==============================================================================

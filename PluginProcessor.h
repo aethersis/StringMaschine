@@ -56,6 +56,7 @@ public:
 	void getStateInformation(MemoryBlock& destData) override;
 	void setStateInformation(const void* data, int sizeInBytes) override;
 
+	AudioProcessorEditor* m_editor;
 	StringSynthesizer m_karplusString;
 	LUTBank m_lutBank;
 private:

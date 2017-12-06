@@ -15,7 +15,7 @@ KarplusString::KarplusString(unsigned int delaySize, float sampleRate, const LUT
 	m_excitationStrength(1.f),
 	m_oscillator(44100, lutBank)
 {
-	m_highpassFilter.setFrequency(10.f); // 1Hz high-pass for DC offset cancellation in feedback loop
+	m_highpassFilter.setFrequency(1.f); // 1Hz high-pass for DC offset cancellation in feedback loop
 	setFrequency(55.f);
 	setExcitationSource(LUTBank::Waveform::Sine);
 	setExcitationType(ExcitationType::Momentary);
@@ -97,7 +97,7 @@ void KarplusString::setFrequency(float desiredFrequency)
 	m_headIndex = (m_tailIndex + static_cast<int>(m_currentLength)) % m_buffer.size();
 
 
-	m_continuousLevelScaleFactor = 1.f / powf(m_frequency, 1.f / 3.2f) * m_excitationStrength;
+	m_continuousLevelScaleFactor = 1.f / powf(m_frequency, 1.f / 3.15f) * m_excitationStrength;
 
 }
 

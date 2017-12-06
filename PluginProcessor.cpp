@@ -148,10 +148,12 @@ void StringMaschineAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiB
 	for (MidiBuffer::Iterator i(midiMessages); i.getNextEvent(m, time);)
 	{
 		auto key = m.getNoteNumber();
+		auto velocity = m.getVelocity();
+
 		if (m.isNoteOn())
 		{
 			volume = m.getVelocity() / 127.f;
-			m_karplusString.pressKey(key);
+			m_karplusString.pressKey(key, velocity);
 		}
 		else if (m.isNoteOff())
 		{
@@ -176,7 +178,8 @@ bool StringMaschineAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* StringMaschineAudioProcessor::createEditor()
 {
-	return new PluginGui(*this);
+	m_editor = new PluginGui(*this);
+	return m_editor;
 }
 
 //==============================================================================

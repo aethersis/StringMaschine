@@ -112,6 +112,7 @@ PluginGui::PluginGui (StringMaschineAudioProcessor& processor)
     sldFeedbackFilterBrightness->setSliderStyle (Slider::Rotary);
     sldFeedbackFilterBrightness->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     sldFeedbackFilterBrightness->addListener (this);
+    sldFeedbackFilterBrightness->setSkewFactor (1.5);
 
     addAndMakeVisible (sldExcitationVolume = new Slider ("Excitation volume"));
     sldExcitationVolume->setTooltip (TRANS("Determines the strength of the string excitation"));
@@ -297,6 +298,50 @@ PluginGui::PluginGui (StringMaschineAudioProcessor& processor)
     lblMasterVolume->setColour (TextEditor::textColourId, Colours::black);
     lblMasterVolume->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (textButton = new TextButton ("new button"));
+    textButton->setButtonText (TRANS("V"));
+    textButton->addListener (this);
+
+    addAndMakeVisible (tbThicknesVel = new TextButton (String()));
+    tbThicknesVel->setButtonText (TRANS("N"));
+    tbThicknesVel->addListener (this);
+    tbThicknesVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbBrightnessVel = new TextButton (String()));
+    tbBrightnessVel->setButtonText (TRANS("N"));
+    tbBrightnessVel->addListener (this);
+    tbBrightnessVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbLevelVel = new TextButton (String()));
+    tbLevelVel->setButtonText (TRANS("N"));
+    tbLevelVel->addListener (this);
+    tbLevelVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbStrengthVel = new TextButton (String()));
+    tbStrengthVel->setButtonText (TRANS("N"));
+    tbStrengthVel->addListener (this);
+    tbStrengthVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbCutoffVel = new TextButton (String()));
+    tbCutoffVel->setButtonText (TRANS("N"));
+    tbCutoffVel->addListener (this);
+    tbCutoffVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbVolumeVel = new TextButton (String()));
+    tbVolumeVel->setButtonText (TRANS("N"));
+    tbVolumeVel->addListener (this);
+    tbVolumeVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbTremoloFreqVel = new TextButton (String()));
+    tbTremoloFreqVel->setButtonText (TRANS("N"));
+    tbTremoloFreqVel->addListener (this);
+    tbTremoloFreqVel->setColour (TextButton::buttonColourId, Colours::grey);
+
+    addAndMakeVisible (tbTremoloDepthVel = new TextButton (String()));
+    tbTremoloDepthVel->setButtonText (TRANS("N"));
+    tbTremoloDepthVel->addListener (this);
+    tbTremoloDepthVel->setColour (TextButton::buttonColourId, Colours::grey);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -347,6 +392,15 @@ PluginGui::~PluginGui()
     lblTremoloDepth = nullptr;
     sldMasterVolume = nullptr;
     lblMasterVolume = nullptr;
+    textButton = nullptr;
+    tbThicknesVel = nullptr;
+    tbBrightnessVel = nullptr;
+    tbLevelVel = nullptr;
+    tbStrengthVel = nullptr;
+    tbCutoffVel = nullptr;
+    tbVolumeVel = nullptr;
+    tbTremoloFreqVel = nullptr;
+    tbTremoloDepthVel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -404,6 +458,15 @@ void PluginGui::resized()
     lblTremoloDepth->setBounds (256, 440, 88, 24);
     sldMasterVolume->setBounds (360, 32, 104, 104);
     lblMasterVolume->setBounds (360, 128, 104, 24);
+    textButton->setBounds (336, 192, 16, 16);
+    tbThicknesVel->setBounds (336, 192, 16, 16);
+    tbBrightnessVel->setBounds (224, 192, 16, 16);
+    tbLevelVel->setBounds (112, 192, 16, 16);
+    tbStrengthVel->setBounds (224, 32, 16, 16);
+    tbCutoffVel->setBounds (336, 32, 16, 16);
+    tbVolumeVel->setBounds (448, 32, 16, 16);
+    tbTremoloFreqVel->setBounds (224, 344, 16, 16);
+    tbTremoloDepthVel->setBounds (336, 344, 16, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -522,12 +585,89 @@ void PluginGui::buttonClicked (Button* buttonThatWasClicked)
 		processor.m_karplusString.setExcitationType(Continuous);
         //[/UserButtonCode_tbExcitationContinuous]
     }
+    else if (buttonThatWasClicked == textButton)
+    {
+        //[UserButtonCode_textButton] -- add your button handler code here..
+        //[/UserButtonCode_textButton]
+    }
+    else if (buttonThatWasClicked == tbThicknesVel)
+    {
+        //[UserButtonCode_tbThicknesVel] -- add your button handler code here..
+		processor.m_karplusString.followDynamicLevel = (StringSynthesizer::FollowType)((processor.m_karplusString.followDynamicLevel + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbThicknesVel, processor.m_karplusString.followDynamicLevel);
+        //[/UserButtonCode_tbThicknesVel]
+    }
+    else if (buttonThatWasClicked == tbBrightnessVel)
+    {
+        //[UserButtonCode_tbBrightnessVel] -- add your button handler code here..
+		processor.m_karplusString.followDampingBrightness = (StringSynthesizer::FollowType)((processor.m_karplusString.followDampingBrightness + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbBrightnessVel, processor.m_karplusString.followDampingBrightness);
+        //[/UserButtonCode_tbBrightnessVel]
+    }
+    else if (buttonThatWasClicked == tbLevelVel)
+    {
+        //[UserButtonCode_tbLevelVel] -- add your button handler code here..
+		processor.m_karplusString.followDampingCoefficient = (StringSynthesizer::FollowType)((processor.m_karplusString.followDampingCoefficient + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbLevelVel, processor.m_karplusString.followDampingCoefficient);
+        //[/UserButtonCode_tbLevelVel]
+    }
+    else if (buttonThatWasClicked == tbStrengthVel)
+    {
+        //[UserButtonCode_tbStrengthVel] -- add your button handler code here..
+		processor.m_karplusString.followExcitationStrength = (StringSynthesizer::FollowType)((processor.m_karplusString.followExcitationStrength + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbStrengthVel, processor.m_karplusString.followExcitationStrength);
+        //[/UserButtonCode_tbStrengthVel]
+    }
+    else if (buttonThatWasClicked == tbCutoffVel)
+    {
+        //[UserButtonCode_tbCutoffVel] -- add your button handler code here..
+		processor.m_karplusString.followExcitationCutoff = (StringSynthesizer::FollowType)((processor.m_karplusString.followExcitationCutoff + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbCutoffVel, processor.m_karplusString.followExcitationCutoff);
+        //[/UserButtonCode_tbCutoffVel]
+    }
+    else if (buttonThatWasClicked == tbVolumeVel)
+    {
+        //[UserButtonCode_tbVolumeVel] -- add your button handler code here..
+		
+        //[/UserButtonCode_tbVolumeVel]
+    }
+    else if (buttonThatWasClicked == tbTremoloFreqVel)
+    {
+        //[UserButtonCode_tbTremoloFreqVel] -- add your button handler code here..
+		processor.m_karplusString.followTremoloFrequency = (StringSynthesizer::FollowType)((processor.m_karplusString.followTremoloFrequency + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbTremoloFreqVel, processor.m_karplusString.followTremoloFrequency);
+        //[/UserButtonCode_tbTremoloFreqVel]
+    }
+    else if (buttonThatWasClicked == tbTremoloDepthVel)
+    {
+        //[UserButtonCode_tbTremoloDepthVel] -- add your button handler code here..
+		processor.m_karplusString.followTremoloDepth = (StringSynthesizer::FollowType)((processor.m_karplusString.followTremoloDepth + 1) % StringSynthesizer::FollowType::Count);
+		toggleFollowButtonState(tbTremoloDepthVel, processor.m_karplusString.followTremoloDepth);
+        //[/UserButtonCode_tbTremoloDepthVel]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
 }
 
-
+void PluginGui::toggleFollowButtonState(ScopedPointer<TextButton>& button, StringSynthesizer::FollowType followType)
+{
+	switch (followType)
+	{
+	case StringSynthesizer::FollowType::Adsr:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::mediumseagreen);
+		button->setButtonText("A");
+		break;
+	case StringSynthesizer::FollowType::Key:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::yellowgreen);
+		button->setButtonText("V");
+		break;	
+	default:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::grey);
+		button->setButtonText("N");
+		break;
+	}
+}
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 //[/MiscUserCode]
@@ -591,7 +731,7 @@ BEGIN_JUCER_METADATA
   <SLIDER name="Feedback filter brightness" id="1fd610d5bca2448f" memberName="sldFeedbackFilterBrightness"
           virtualName="" explicitFocusOrder="1" pos="136 192 104 104" tooltip="Filter brightness"
           min="-1" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.5"
           needsCallback="1"/>
   <SLIDER name="Excitation volume" id="bcf0f6716693dffe" memberName="sldExcitationVolume"
           virtualName="" explicitFocusOrder="1" pos="136 32 104 104" tooltip="Determines the strength of the string excitation"
@@ -704,6 +844,33 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Master Volume" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" kerning="0" bold="0" italic="0" justification="36"/>
+  <TEXTBUTTON name="new button" id="c66178510a2d6fbe" memberName="textButton"
+              virtualName="" explicitFocusOrder="0" pos="336 192 16 16" buttonText="V"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="469687030c533769" memberName="tbThicknesVel" virtualName=""
+              explicitFocusOrder="0" pos="336 192 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="13cee11fde3779e1" memberName="tbBrightnessVel" virtualName=""
+              explicitFocusOrder="0" pos="224 192 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="4d0a8af2de40f94f" memberName="tbLevelVel" virtualName=""
+              explicitFocusOrder="0" pos="112 192 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="d5d81509c68cbce7" memberName="tbStrengthVel" virtualName=""
+              explicitFocusOrder="0" pos="224 32 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="4c3fbe2c289c1d06" memberName="tbCutoffVel" virtualName=""
+              explicitFocusOrder="0" pos="336 32 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="8c21b2e30f366665" memberName="tbVolumeVel" virtualName=""
+              explicitFocusOrder="0" pos="448 32 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="a8ba413bb2e4fc8b" memberName="tbTremoloFreqVel" virtualName=""
+              explicitFocusOrder="0" pos="224 344 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="8f4f04c95eeaaf83" memberName="tbTremoloDepthVel"
+              virtualName="" explicitFocusOrder="0" pos="336 344 16 16" bgColOff="ff808080"
+              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
