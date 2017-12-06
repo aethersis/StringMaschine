@@ -1,8 +1,8 @@
 #include "StringSynthesizer.h"
 StringSynthesizer::StringSynthesizer(uint8_t polyphony, float sampleRate, const LUTBank& lutBank)
-	: m_strings(24, KarplusString(sampleRate / 10, sampleRate, lutBank)),
-	m_keyboard(24, sampleRate),
-	m_polyphony(24),
+	: m_strings(16, KarplusString(sampleRate / 10, sampleRate, lutBank)),
+	m_keyboard(16, sampleRate),
+	m_polyphony(16),
 	m_tremolo(lutBank),
 	m_masterVolume(1)
 {

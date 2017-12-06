@@ -84,8 +84,8 @@ void KarplusString::setFrequency(float desiredFrequency)
 	m_dampingFilter.setDampedStringFrequency(desiredFrequency);
 	m_dynamicLevelFilter.setFrequency(desiredFrequency);
 	m_oscillator.setFrequency(desiredFrequency);
-
 	m_frequency = desiredFrequency;
+
 	m_currentLength = m_sampleRate / desiredFrequency - .5f;
 	float integerPart = 0.f;
 	float fractionalPart = modf(m_currentLength, &integerPart);
@@ -93,10 +93,11 @@ void KarplusString::setFrequency(float desiredFrequency)
 
 	assert(integerPart <= m_buffer.size());
 
-	m_headIndex = (m_tailIndex + static_cast<int>(m_currentLength)) % m_buffer.size();
-	m_currentLength = integerPart;
 
-	m_continuousLevelScaleFactor = 1.f / powf(m_frequency, 1.f / 3.f) * m_excitationStrength;
+	m_headIndex = (m_tailIndex + static_cast<int>(m_currentLength)) % m_buffer.size();
+
+
+	m_continuousLevelScaleFactor = 1.f / powf(m_frequency, 1.f / 3.2f) * m_excitationStrength;
 
 }
 

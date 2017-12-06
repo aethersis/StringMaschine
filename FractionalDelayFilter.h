@@ -5,11 +5,11 @@
 class FractionalDelayFilter : public IFilter
 {
 public:
-	FractionalDelayFilter() : m_size(0.f), m_previousOutput(0.f), m_previousInput(0.f), m_delayCoefficient(0.f) {}
+	FractionalDelayFilter() : m_previousOutput(0.f), m_previousInput(0.f), m_delayCoefficient(0.f) {}
 
 	float process(float input) override
 	{
-		m_previousOutput = (1.f - m_size) * input + m_size * m_previousInput;
+		m_previousOutput = m_delayCoefficient * input + m_previousInput - m_delayCoefficient * m_previousOutput;
 		m_previousInput = input;
 
 		return m_previousOutput;
@@ -17,13 +17,11 @@ public:
 
 	void setSize(float size)
 	{
-		assert(m_size >= 0.f && m_size <= 1.f); 
-		m_delayCoefficient = (1.f - m_size) / (1.f + m_size);
-		m_size = size;
+		assert(size >= 0.f && size <= 1.f);
+		m_delayCoefficient = (1.f - size) / (1.f + size);
 	}
 
 private:
-	float m_size;
 	float m_delayCoefficient;
 	float m_previousOutput, m_previousInput;
 };
