@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.2.0
 
   ------------------------------------------------------------------------------
 
@@ -25,15 +25,15 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 /*
-	: processor(processor),
-	AudioProcessorEditor(&processor)
+	: processor(processor)
+	, AudioProcessorEditor(&processor)
 */
 //[/MiscUserDefs]
 
 //==============================================================================
 PluginGui::PluginGui (StringMaschineAudioProcessor& processor)
-	: processor(processor),
-	AudioProcessorEditor(&processor)
+	: processor(processor)
+	, AudioProcessorEditor(&processor)
 {
     //[Constructor_pre] You can add your own custom stuff here..
 
@@ -251,7 +251,7 @@ PluginGui::PluginGui (StringMaschineAudioProcessor& processor)
 
     addAndMakeVisible (sldTremoloFrequency = new Slider ("Tremolo frequency"));
     sldTremoloFrequency->setExplicitFocusOrder (1);
-    sldTremoloFrequency->setRange (0, 25, 0);
+    sldTremoloFrequency->setRange (0, 15, 0);
     sldTremoloFrequency->setSliderStyle (Slider::Rotary);
     sldTremoloFrequency->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     sldTremoloFrequency->addListener (this);
@@ -678,7 +678,7 @@ BEGIN_JUCER_METADATA
          kerning="0" bold="0" italic="0" justification="36"/>
   <SLIDER name="Tremolo frequency" id="657ebdfa44885902" memberName="sldTremoloFrequency"
           virtualName="" explicitFocusOrder="1" pos="136 344 104 104" min="0"
-          max="25" int="0" style="Rotary" textBoxPos="NoTextBox" textBoxEditable="1"
+          max="15" int="0" style="Rotary" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <SLIDER name="Excitation cutoff" id="af5ccd70f4a99dc8" memberName="sldTremoloDepth"
           virtualName="" explicitFocusOrder="1" pos="248 344 104 104" min="0"

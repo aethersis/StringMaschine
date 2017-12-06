@@ -3,7 +3,7 @@
 Tremolo::Tremolo(const LUTBank& lutBank)
 	: m_frequency(1),
 	m_amplitude(1),
-	m_oscillator(lutBank)
+	m_oscillator(44100.f, lutBank)
 {
 }
 
@@ -24,5 +24,6 @@ void Tremolo::setWaveform(LUTBank::Waveform waveform)
 
 float Tremolo::process()
 {
-	return m_amplitude * m_oscillator.generate() / (float)g_outputTypeMax + (1.f-m_amplitude);
+	constexpr auto maximumAmplitude = 1.f;
+	return m_amplitude * m_oscillator.generate() / maximumAmplitude + (1.f-m_amplitude);
 }

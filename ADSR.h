@@ -7,12 +7,12 @@ enum class AdsrState { Attack, Decay, Sustain, Release, Shutdown };
 class ADSR
 {
 public:
-	ADSR(float sampleRate) : m_currentState(AdsrState::Release),
+	ADSR(float floatRate) : m_currentState(AdsrState::Release),
 		m_attackTco(expf(-1.5)),
 		m_releaseTco(expf(-4.95)),
 		m_currentGain(0),
 		m_sustainLevel(1.f),
-		m_sampleRate(sampleRate)
+		m_sampleRate(floatRate)
 	{
 		setAttack(1);
 		setDecay(1);
@@ -31,15 +31,15 @@ public:
 
 	void setAttack(float attackDurationMsec)
 	{
-		float samples = m_sampleRate * attackDurationMsec / 1000.f;
-		m_attackCoeff = expf(-logf((1.f + m_attackTco) / m_attackTco) / samples);
+		float floats = m_sampleRate * attackDurationMsec / 1000.f;
+		m_attackCoeff = expf(-logf((1.f + m_attackTco) / m_attackTco) / floats);
 		m_attackOffset = (1.f + m_attackTco) * (1.f - m_attackCoeff);
 	}
 
 	void setDecay(float decayDurationMsec)
 	{
-		float samples = m_sampleRate * decayDurationMsec / 1000.f;
-		m_decayCoeff = expf(-logf((1.f + m_releaseTco) / m_releaseTco) / samples);
+		float floats = m_sampleRate * decayDurationMsec / 1000.f;
+		m_decayCoeff = expf(-logf((1.f + m_releaseTco) / m_releaseTco) / floats);
 		m_decayOffset = (m_sustainLevel - m_releaseTco)*(1.f - m_decayCoeff);
 	}
 
@@ -50,8 +50,8 @@ public:
 
 	void setRelease(float releaseDurationMsec)
 	{
-		float samples = m_sampleRate * releaseDurationMsec / 1000.f;
-		m_releaseCoeff = expf(-logf((1.f + m_releaseTco) / m_releaseTco) / samples);
+		float floats = m_sampleRate * releaseDurationMsec / 1000.f;
+		m_releaseCoeff = expf(-logf((1.f + m_releaseTco) / m_releaseTco) / floats);
 		m_releaseOffset = -m_releaseTco * (1.f - m_releaseCoeff);
 	}
 

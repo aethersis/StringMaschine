@@ -10,7 +10,7 @@ LUTBank::LUTBank()
 	generateEmptyLut(&emptyLut[0]);
 }
 
-const Sample* LUTBank::getLutPointer(Waveform waveform) const
+const float* LUTBank::getLutPointer(Waveform waveform) const
 {
 	switch (waveform)
 	{
@@ -31,54 +31,54 @@ const Sample* LUTBank::getLutPointer(Waveform waveform) const
 	return &sineLut[0];
 }
 
-void LUTBank::generateSineLut(Sample * lut)
+void LUTBank::generateSineLut(float * lut)
 {
-	for (auto i = 0U; i < g_lookupTableSize; ++i)
+	static constexpr auto twoPi = 2.f * 3.1415926535;
+	for (auto i = 0U; i < lookupTableSize; ++i)
 	{
-		lut[i] = static_cast<Sample>(std::numeric_limits<Sample>::max() * sinf(2.f * g_pi * i / (float)g_lookupTableSize));
+		lut[i] = static_cast<float>(1.f * sinf(twoPi * i / (float)lookupTableSize));
 	}
 }
 
-void LUTBank::generateSawtoothLut(Sample * lut)
+void LUTBank::generateSawtoothLut(float * lut)
 {
-	for (auto i = 0U; i < g_lookupTableSize; ++i)
+	for (auto i = 0U; i < lookupTableSize; ++i)
 	{
-		lut[i] = 2 * (i % g_lookupTableSize) * (std::numeric_limits<Sample>::max() / g_lookupTableSize) - std::numeric_limits<Sample>::min();
+		lut[i] = 2 * (i % lookupTableSize) * (1.f / lookupTableSize) - 1.f;
 	}
 }
 
-void LUTBank::generateTriangleLut(Sample * lut)
+void LUTBank::generateTriangleLut(float * lut)
 {
-	for (auto i = 0; i < g_lookupTableSize; ++i)
+	for (auto i = 0; i < lookupTableSize; ++i)
 	{
-		lut[i] = 4 * abs(((i) % g_lookupTableSize) - g_lookupTableSize / 2) * (std::numeric_limits<Sample>::max() / g_lookupTableSize) - std::numeric_limits<Sample>::max();
+		lut[i] = 4.f * abs(((i) % lookupTableSize) - lookupTableSize / 2) * (1.f / lookupTableSize) - 1.f;
 	}
 }
 
-void LUTBank::generateSquareLut(Sample * lut)
+void LUTBank::generateSquareLut(float * lut)
 {
-	for (auto i = 0U; i < g_lookupTableSize; ++i)
+	for (auto i = 0U; i < lookupTableSize; ++i)
 	{
-		lut[i] = (i < g_lookupTableSize / 2 ? std::numeric_limits<Sample>::max() : std::numeric_limits<Sample>::min());
+		lut[i] = (i < lookupTableSize / 2 ? 1.f : std::numeric_limits<float>::min());
 	}
 }
 
-void LUTBank::generateNoiseLut(Sample * lut)
+void LUTBank::generateNoiseLut(float * lut)
 {
 	std::random_device randomDevice;
 	std::mt19937 generator(randomDevice());
-	std::uniform_int_distribution<int> distribution(std::numeric_limits<Sample>::min(),
-		std::numeric_limits<Sample>::max());
+	std::uniform_real_distribution<float> distribution(-1.f, 1.f);
 
-	for (auto i = 0U; i < g_lookupTableSize; ++i)
+	for (auto i = 0U; i < lookupTableSize; ++i)
 	{
 		lut[i] = distribution(generator);
 	}
 }
 
-void LUTBank::generateEmptyLut(Sample * lut)
+void LUTBank::generateEmptyLut(float * lut)
 {
-	for (auto i = 0U; i < g_lookupTableSize; ++i)
+	for (auto i = 0U; i < lookupTableSize; ++i)
 	{
 		lut[i] = 0;
 	}

@@ -10,12 +10,12 @@ KarplusString::KarplusString(unsigned int delaySize, float sampleRate, const LUT
 	m_currentLength(delaySize),
 	m_sampleRate(sampleRate),
 	m_beingPlucked(false),
-	m_lowpassFilter(g_sampleRate),
+	m_lowpassFilter(44100),
 	m_highpassFilter(sampleRate),
 	m_excitationStrength(1.f),
-	m_oscillator(lutBank)
+	m_oscillator(44100, lutBank)
 {
-	m_highpassFilter.setFrequency(1.f); // 1Hz high-pass for DC offset cancellation in feedback loop
+	m_highpassFilter.setFrequency(10.f); // 1Hz high-pass for DC offset cancellation in feedback loop
 	setFrequency(55.f);
 	setExcitationSource(LUTBank::Waveform::Sine);
 	setExcitationType(ExcitationType::Momentary);
@@ -30,18 +30,18 @@ float KarplusString::update(float input, float envelope, float tremolo)
 	if (m_beingPlucked && m_excitationType == ExcitationType::Continuous)
 	{
 		
-		input += m_oscillator.generate()/(float)std::numeric_limits<Sample>::max();
+		input += m_oscillator.generate();
 		if (m_oscillator.getWaveform() != LUTBank::Waveform::None)
 		{
 			input *= m_continuousLevelScaleFactor;
 		}
-		//input = m_lowpassFilter.process(input);
+		input = m_lowpassFilter.process(input);
 	}
 
 	auto output = m_buffer[m_tailIndex];
+	output = m_fractionalDelay.process(output);
 
 	auto feedback = output;
-	//feedback = m_fractionalDelay.process(feedback);
 	feedback = m_highpassFilter.process(feedback); //remove DC offset
 	feedback = m_dampingFilter.process(feedback);
 
@@ -52,7 +52,7 @@ float KarplusString::update(float input, float envelope, float tremolo)
 	m_currentIndex = (m_currentIndex + 1) % (unsigned int)m_currentLength;
 
 	output = m_dynamicLevelFilter.process(output);
-	output = m_lowpassFilter.process(output); //remove DC offset
+	
 	return output;
 }
 
@@ -66,16 +66,16 @@ void KarplusString::pluck(bool on)
 		m_dampingFilter.reset();
 		m_highpassFilter.reset();
 	}
-	if (/*m_excitationType == ExcitationType::Momentary &&*/ on)
+	if (m_excitationType == ExcitationType::Momentary && on)
 	{
 		//fill buffer from tail to head 
 		for (int i = m_tailIndex; i < m_tailIndex + (int)m_currentLength; ++i)
 		{
-			m_buffer[i%m_buffer.size()] = m_excitationStrength * m_oscillator.generate() / (float)std::numeric_limits<Sample>::max();
+			m_buffer[i%m_buffer.size()] = m_excitationStrength * m_oscillator.generate();
 		}
 
 		//don't forget to update fractional delay to avoid detuning and noisy artifacts
-		//m_fractionalDelay.process(m_lowpassFilter.process(m_excitationStrength * m_excitationGenerator(m_currentLength, m_currentLength)));
+		m_fractionalDelay.process(m_lowpassFilter.process(m_excitationStrength  * m_oscillator.generate()));
 	}
 }
 

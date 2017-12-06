@@ -3,29 +3,29 @@
 #include <random>
 #include <memory>
 #include <array>
-#include "Settings.h"
 
 struct LUTBank
 {
 public:
+	static const int lookupTableSize = 44100;
 	enum class Waveform {Sine, Sawtooth, Noise, Triangle, Square, None}; 
-	Sample sineLut[g_lookupTableSize], noiseLut[g_lookupTableSize], triangleLut[g_lookupTableSize], squareLut[g_lookupTableSize], sawtoothLut[g_lookupTableSize], emptyLut[g_lookupTableSize];
+	float sineLut[lookupTableSize], noiseLut[lookupTableSize], triangleLut[lookupTableSize], squareLut[lookupTableSize], sawtoothLut[lookupTableSize], emptyLut[lookupTableSize];
 
 	LUTBank();
 
-	const Sample* getLutPointer(Waveform waveform) const;
+	const float* getLutPointer(Waveform waveform) const;
 	
 private:
 	
-	void generateSineLut(Sample *lut);
+	void generateSineLut(float *lut);
 
-	void generateSawtoothLut(Sample *lut);
+	void generateSawtoothLut(float *lut);
 
-	void generateTriangleLut(Sample *lut);
+	void generateTriangleLut(float *lut);
 
-	void generateSquareLut(Sample *lut);
+	void generateSquareLut(float *lut);
 
-	void generateNoiseLut(Sample *lut);
+	void generateNoiseLut(float *lut);
 
-	void generateEmptyLut(Sample *lut);
+	void generateEmptyLut(float *lut);
 };

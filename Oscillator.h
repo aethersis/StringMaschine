@@ -2,14 +2,14 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
-#include "Settings.h"
 #include "LookupTables.h"
 
 class Oscillator
 {
 public:
-	Oscillator(const LUTBank& lutBank)
+	Oscillator(float floatRate, const LUTBank& lutBank)
 		: m_lutBank(lutBank)
+		, m_sampleRate(floatRate)
 	{
 		setWaveform(LUTBank::Waveform::Sine);
 		setFrequency(1);
@@ -26,35 +26,39 @@ public:
 		return m_waveform;
 	}
 
-	void setFrequency(uint16_t frequency)
+	void setFrequency(float frequency)
 	{
 		m_baseFrequency = frequency;
-		m_increment = g_phaseAccumulatorMax / g_sampleRate * frequency;
+		m_increment = frequency / m_sampleRate * (float)m_lutBank.lookupTableSize;
 	}
 
-	uint16_t getFrequency()
+	float getFrequency()
 	{
 		return m_baseFrequency;
 	}
 
-	void applyModulation(Sample modulatorOutput, uint16_t frequencyRange)
+	void applyFrequencyModulation(float modulatorOutput, float frequencyRange)
 	{
-		auto modulatedFrequency = ((LargeType)modulatorOutput * frequencyRange) / std::numeric_limits<Sample>::max();
-		m_increment = g_phaseAccumulatorMax / g_sampleRate * (m_baseFrequency + modulatedFrequency);
+		auto modulatedFrequency = (modulatorOutput * frequencyRange);
+		m_increment = m_sampleRate / (m_baseFrequency + modulatedFrequency);
 	}
 
-	Sample generate()
+	float generate()
 	{
-		m_phaseAccumulator += m_increment;
-		return m_lookupTable[m_phaseAccumulator >> (g_phaseAccumulatorBits - g_lookupTableSizeBits)];
+		m_phaseAccumulator = fmod(m_phaseAccumulator + m_increment, (float)m_lutBank.lookupTableSize);
+		float integerPart;
+		auto fractionalPart = modf(m_phaseAccumulator, &integerPart);
+
+		return (1.f - fractionalPart) * m_lookupTable[(int)m_phaseAccumulator] + (fractionalPart) * m_lookupTable[(int)(m_phaseAccumulator + 1)%m_lutBank.lookupTableSize];
 	}
 
 private:
 	LUTBank::Waveform m_waveform;
-	const Sample* m_lookupTable;
-	uint16_t m_baseFrequency = 0;
+	const float* m_lookupTable;
+	float m_baseFrequency = 0;
+	float m_sampleRate;
 
-	LargeTypeUnsigned m_increment = 0;
-	LargeTypeUnsigned m_phaseAccumulator = 0;
+	float m_increment = 0;
+	float m_phaseAccumulator = 0;
 	const LUTBank& m_lutBank;
 };
