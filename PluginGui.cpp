@@ -327,11 +327,6 @@ PluginGui::PluginGui (StringMaschineAudioProcessor& processor)
     tbCutoffVel->addListener (this);
     tbCutoffVel->setColour (TextButton::buttonColourId, Colours::grey);
 
-    addAndMakeVisible (tbVolumeVel = new TextButton (String()));
-    tbVolumeVel->setButtonText (TRANS("N"));
-    tbVolumeVel->addListener (this);
-    tbVolumeVel->setColour (TextButton::buttonColourId, Colours::grey);
-
     addAndMakeVisible (tbTremoloFreqVel = new TextButton (String()));
     tbTremoloFreqVel->setButtonText (TRANS("N"));
     tbTremoloFreqVel->addListener (this);
@@ -398,7 +393,6 @@ PluginGui::~PluginGui()
     tbLevelVel = nullptr;
     tbStrengthVel = nullptr;
     tbCutoffVel = nullptr;
-    tbVolumeVel = nullptr;
     tbTremoloFreqVel = nullptr;
     tbTremoloDepthVel = nullptr;
 
@@ -464,7 +458,6 @@ void PluginGui::resized()
     tbLevelVel->setBounds (112, 192, 16, 16);
     tbStrengthVel->setBounds (224, 32, 16, 16);
     tbCutoffVel->setBounds (336, 32, 16, 16);
-    tbVolumeVel->setBounds (448, 32, 16, 16);
     tbTremoloFreqVel->setBounds (224, 344, 16, 16);
     tbTremoloDepthVel->setBounds (336, 344, 16, 16);
     //[UserResized] Add your own custom resize handling here..
@@ -561,6 +554,7 @@ void PluginGui::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == sldMasterVolume)
     {
         //[UserSliderCode_sldMasterVolume] -- add your slider handling code here..
+		processor.m_karplusString.setMasterVolume(sldMasterVolume->getValue());
         //[/UserSliderCode_sldMasterVolume]
     }
 
@@ -625,12 +619,6 @@ void PluginGui::buttonClicked (Button* buttonThatWasClicked)
 		toggleFollowButtonState(tbCutoffVel, processor.m_karplusString.followExcitationCutoff);
         //[/UserButtonCode_tbCutoffVel]
     }
-    else if (buttonThatWasClicked == tbVolumeVel)
-    {
-        //[UserButtonCode_tbVolumeVel] -- add your button handler code here..
-		
-        //[/UserButtonCode_tbVolumeVel]
-    }
     else if (buttonThatWasClicked == tbTremoloFreqVel)
     {
         //[UserButtonCode_tbTremoloFreqVel] -- add your button handler code here..
@@ -650,24 +638,9 @@ void PluginGui::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void PluginGui::toggleFollowButtonState(ScopedPointer<TextButton>& button, StringSynthesizer::FollowType followType)
-{
-	switch (followType)
-	{
-	case StringSynthesizer::FollowType::Adsr:
-		button->setColour(TextButton::ColourIds::buttonColourId, Colours::mediumseagreen);
-		button->setButtonText("A");
-		break;
-	case StringSynthesizer::FollowType::Key:
-		button->setColour(TextButton::ColourIds::buttonColourId, Colours::yellowgreen);
-		button->setButtonText("V");
-		break;	
-	default:
-		button->setColour(TextButton::ColourIds::buttonColourId, Colours::grey);
-		button->setButtonText("N");
-		break;
-	}
-}
+
+
+
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 //[/MiscUserCode]
@@ -861,9 +834,6 @@ BEGIN_JUCER_METADATA
               buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="4c3fbe2c289c1d06" memberName="tbCutoffVel" virtualName=""
               explicitFocusOrder="0" pos="336 32 16 16" bgColOff="ff808080"
-              buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="" id="8c21b2e30f366665" memberName="tbVolumeVel" virtualName=""
-              explicitFocusOrder="0" pos="448 32 16 16" bgColOff="ff808080"
               buttonText="N" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="a8ba413bb2e4fc8b" memberName="tbTremoloFreqVel" virtualName=""
               explicitFocusOrder="0" pos="224 344 16 16" bgColOff="ff808080"

@@ -30,11 +30,12 @@ float KarplusString::update(float input, float envelope, float tremolo)
 	if (m_beingPlucked && m_excitationType == ExcitationType::Continuous)
 	{
 		
-		input += m_oscillator.generate();
+		input += m_oscillator.generate()*m_excitationStrength;
 		if (m_oscillator.getWaveform() != LUTBank::Waveform::None)
 		{
 			input *= m_continuousLevelScaleFactor;
 		}
+		input = m_lowpassFilter.process(input);
 		input = m_lowpassFilter.process(input);
 	}
 

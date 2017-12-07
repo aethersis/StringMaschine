@@ -10,14 +10,25 @@ StringSynthesizer::StringSynthesizer(uint8_t polyphony, float sampleRate, const 
 
 float StringSynthesizer::update(float input)
 {
+	m_sampleCounter++;
+	m_sampleCounter = m_sampleCounter % 4410; // apply adsr state every 100ms
+
 	float output = 0.f;
 	uint8_t idx = 0;
 	m_keyboard.tick();
 	auto tremoloSample = m_tremolo.process();
+
 	for (uint8_t idx=0; idx<m_polyphony; ++idx)
 	{
-		handleKeyAdsr(idx);
-		output += m_strings[idx].update(input, 1.f, tremoloSample) * m_keyboard.getCurrentGain(idx);
+		auto adsrState = m_keyboard.getCurrentGain(idx);
+
+		if (m_sampleCounter == 0)
+			handleKeyAdsr(idx, adsrState);
+
+		if (followMasterVolume != Adsr)
+			adsrState = 1.f;
+
+		output += m_strings[idx].update(input, 1.f, tremoloSample) * adsrState;
 	}
 
 	return m_masterVolume * output / m_polyphony;
@@ -175,18 +186,16 @@ void StringSynthesizer::handleKeyVelocity(float normalizedVelocity, uint8_t keyI
 	}
 	if (followDampingBrightness == FollowType::Key)
 	{
-		m_strings[keyIndex].setDampingBrightness(m_excitationCutoff * normalizedVelocity);
+		m_strings[keyIndex].setDampingBrightness(m_dampingBrightness * normalizedVelocity);
 	}
 	if (followDampingCoefficient == FollowType::Key)
 	{
-		m_strings[keyIndex].setDampingCoefficient(m_excitationCutoff * normalizedVelocity);
+		m_strings[keyIndex].setDampingCoefficient(m_dampingCoefficient * normalizedVelocity);
 	}
 }
 
-void StringSynthesizer::handleKeyAdsr(uint8_t keyIndex)
+void StringSynthesizer::handleKeyAdsr(uint8_t keyIndex, float adsrState)
 {
-	float adsrState = m_keyboard.getCurrentGain(keyIndex);
-
 	if (followDynamicLevel == FollowType::Adsr)
 	{
 		m_strings[keyIndex].setDynamicLevel(m_dynamicLevel * adsrState);
@@ -209,10 +218,10 @@ void StringSynthesizer::handleKeyAdsr(uint8_t keyIndex)
 	}
 	if (followDampingBrightness == FollowType::Adsr)
 	{
-		m_strings[keyIndex].setDampingBrightness(m_excitationCutoff * adsrState);
+		m_strings[keyIndex].setDampingBrightness(m_dampingBrightness * adsrState);
 	}
 	if (followDampingCoefficient == FollowType::Adsr)
 	{
-		m_strings[keyIndex].setDampingCoefficient(m_excitationCutoff * adsrState);
+		m_strings[keyIndex].setDampingCoefficient(m_dampingCoefficient * adsrState);
 	}
 }

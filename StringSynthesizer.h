@@ -46,7 +46,7 @@ public:
 
 private:
 	void handleKeyVelocity(float normalizedVelocity, uint8_t keyIndex);
-	void handleKeyAdsr(uint8_t keyIndex);
+	void handleKeyAdsr(uint8_t keyIndex, float adsrState);
 	float m_dynamicLevel = 1;
 	float m_trempoloDepth = 1;
 	float m_tremoloFrequency = 1;
@@ -56,6 +56,7 @@ private:
 	float m_dampingCoefficient = 1;
 
 	Tremolo m_tremolo;
+	unsigned int m_sampleCounter = 0;
 	std::vector<KarplusString> m_strings;
 	float m_polyphony;
 	float m_masterVolume;

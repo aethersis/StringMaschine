@@ -112,7 +112,6 @@ private:
     ScopedPointer<TextButton> tbLevelVel;
     ScopedPointer<TextButton> tbStrengthVel;
     ScopedPointer<TextButton> tbCutoffVel;
-    ScopedPointer<TextButton> tbVolumeVel;
     ScopedPointer<TextButton> tbTremoloFreqVel;
     ScopedPointer<TextButton> tbTremoloDepthVel;
 
@@ -122,4 +121,22 @@ private:
 };
 
 //[EndFile] You can add extra defines here...
+inline void PluginGui::toggleFollowButtonState(ScopedPointer<TextButton>& button, StringSynthesizer::FollowType followType)
+{
+	switch (followType)
+	{
+	case StringSynthesizer::FollowType::Adsr:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::mediumseagreen);
+		button->setButtonText("A");
+		break;
+	case StringSynthesizer::FollowType::Key:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::yellowgreen);
+		button->setButtonText("V");
+		break;
+	default:
+		button->setColour(TextButton::ColourIds::buttonColourId, Colours::grey);
+		button->setButtonText("N");
+		break;
+	}
+}
 //[/EndFile]
